@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: write
+  pages: write
 
 concurrency:
   group: watch
@@ -44,9 +45,15 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
       - name: 写回仓库
         if: ${{ !inputs.selftest }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           git config user.name "signal-watch"
           git config user.email "signal-watch@users.noreply.github.com"
           git add data docs
           git diff --cached --quiet || git commit -m "watch: $(date -u +%F)"
           git push
+          curl --fail --silent --show-error --request POST \
+            --header "Authorization: Bearer $GITHUB_TOKEN" \
+            --header "Accept: application/vnd.github+json" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/pages/builds"
