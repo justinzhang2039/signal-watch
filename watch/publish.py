@@ -1,0 +1,111 @@
+"""发布层：把警报和月度摘要写成 RSS，再生成一个静态看板页。不花 token。"""
+import datetime as dt
+import email.utils
+import html
+import os
+
+from . import common
+
+KIND_LABEL = {
+    "confirm": "证实", "refute": "反向证据", "actionable": "可上手",
+    "metric": "指标异动", "health": "系统故障", "reconcile": "对账",
+}
+
+
+def site_url():
+    url = os.environ.get("SITE_URL")
+    if url:
+        return url.rstrip("/")
+    repo = os.environ.get("GITHUB_REPOSITORY", "")
+    if "/" in repo:
+        owner, name = repo.split("/", 1)
+        return f"https://{owner.lower()}.github.io/{name}"
+    return "https://example.invalid"
+
+
+def esc(s):
+    return html.escape(str(s or ""), quote=True)
+
+
+def rss(title, desc, filename, entries):
+    base = site_url()
+    parts = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>',
+        f"<title>{esc(title)}</title><link>{esc(base)}/</link><description>{esc(desc)}</description>",
+        f'<language>zh-CN</language><atom:link href="{esc(base)}/{filename}" rel="self" type="application/rss+xml"/>',
+        f"<lastBuildDate>{email.utils.format_datetime(common.now())}</lastBuildDate>",
+    ]
+    for e in entries[:200]:
+        t = dt.datetime.fromisoformat(e["time"])
+        parts.append(
+            f"<item><title>{esc(e['title'])}</title><link>{esc(e.get('url') or base + '/')}</link>"
+            f'<guid isPermaLink="false">{esc(e["id"])}</guid><pubDate>{email.utils.format_datetime(t)}</pubDate>'
+            f"<description>{esc(e['body'])}</description></item>"
+        )
+    parts.append("</channel></rss>")
+    (common.DOCS / filename).write_text("\n".join(parts) + "\n", encoding="utf-8")
+
+
+CSS = """
+:root{color-scheme:light}
+body{font:15px/1.7 -apple-system,"PingFang SC","Noto Sans SC",sans-serif;color:#1c1b19;background:#f6f4ef;margin:0}
+main{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+h1{font-size:26px;margin:0 0 4px}h2{font-size:17px;margin:36px 0 10px;border-bottom:1px solid #d9d4c7;padding-bottom:6px}
+.sub{color:#6b665a;font-size:13px}a{color:#8a3b12}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{text-align:left;padding:7px 8px;border-bottom:1px solid #e4dfd2;vertical-align:top}
+th{font-weight:600;color:#6b665a;font-size:12px}
+.tag{display:inline-block;padding:0 7px;border-radius:3px;font-size:12px;background:#e9e3d3;margin-right:6px;white-space:nowrap}
+.tag.confirm{background:#d6e8d2}.tag.refute{background:#f1d3cb}.tag.actionable{background:#d5e2ee}.tag.health{background:#f3e2b0}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}.bad{color:#a8321b;font-weight:600}
+"""
+
+
+def index(cfg, state, alerts, tallies):
+    rows = []
+    for h in cfg["hypotheses"]:
+        t = tallies.get(h["id"], {})
+        rows.append(
+            f"<tr><td class='num'>{esc(h['id'])}</td><td>{esc(h['label'])}</td>"
+            f"<td class='num'>{t.get('confirm_strong', 0)} / {t.get('confirm_weak', 0)}</td>"
+            f"<td class='num'>{t.get('refute_strong', 0)} / {t.get('refute_weak', 0)}</td></tr>"
+        )
+    arows = []
+    for a in alerts[:30]:
+        link = f"<a href='{esc(a['url'])}'>{esc(a['title'])}</a>" if a.get("url") else esc(a["title"])
+        arows.append(
+            f"<tr><td class='num'>{esc(a['time'][:10])}</td>"
+            f"<td><span class='tag {esc(a['kind'])}'>{esc(KIND_LABEL.get(a['kind'], a['kind']))}</span>{link}</td></tr>"
+        )
+    hrows = []
+    for src in cfg["sources"]:
+        n = state.get("health", {}).get(src["id"], 0)
+        status = "已停用" if src.get("enabled") is False else ("连续失败 %d 次" % n if n else "正常")
+        hrows.append(f"<tr><td>{esc(src['id'])}</td><td>{esc(src['track'])}</td>"
+                     f"<td class='{'bad' if n else ''}'>{status}</td></tr>")
+    u = state.get("usage", {}).get(common.week_key(), {})
+    cost = u.get("jev_input_tokens", 0) * cfg["judge"].get("jev_usd_per_mtok", 0.042) / 1e6
+    page = f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(cfg['title'])}</title>
+<link rel="alternate" type="application/rss+xml" title="警报" href="alerts.xml">
+<link rel="alternate" type="application/rss+xml" title="月度摘要" href="digest.xml"><style>{CSS}</style></head><body><main>
+<h1>{esc(cfg['title'])}</h1>
+<p class="sub">上次运行 {esc(state.get('last_run', '')[:16].replace('T', ' '))} UTC ·
+订阅 <a href="alerts.xml">警报 RSS</a> · <a href="digest.xml">月度摘要 RSS</a></p>
+<h2>判断台账</h2><table><tr><th>编号</th><th>判断</th><th>证实（强 / 弱）</th><th>反向（强 / 弱）</th></tr>{''.join(rows)}</table>
+<p class="sub">强 = 概率达到警报阈值；弱 = 只进月度摘要。数字是模型判定的累计条数，不是结论。</p>
+<h2>最近警报</h2><table>{''.join(arows) or '<tr><td>暂无</td></tr>'}</table>
+<h2>数据源</h2><table><tr><th>源</th><th>方向</th><th>状态</th></tr>{''.join(hrows)}</table>
+<h2>本周用量</h2><p>Jev 调用 {u.get('jev_calls', 0)} 次，输入 {u.get('jev_input_tokens', 0)} token，约 ${cost:.4f}；
+OpenAI 备用调用 {u.get('openai_calls', 0)} 次。待判队列 {len(state.get('pending', []))} 条。</p>
+</main></body></html>
+"""
+    (common.DOCS / "index.html").write_text(page, encoding="utf-8")
+
+
+def publish(cfg, state, alerts, digests, tallies):
+    common.DOCS.mkdir(parents=True, exist_ok=True)
+    (common.DOCS / ".nojekyll").write_text("", encoding="utf-8")
+    rss(cfg["title"] + " · 警报", "只有判断被证实、被推翻、出现可上手的东西或系统故障时才更新。", "alerts.xml", alerts)
+    rss(cfg["title"] + " · 月度摘要", "每月一篇：弱证据、指标趋势、用量。", "digest.xml", digests)
+    index(cfg, state, alerts, tallies)

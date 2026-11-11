@@ -1,0 +1,52 @@
+name: watch
+
+on:
+  schedule:
+    - cron: "17 22 * * *"   # 每天 UTC 22:17 = 北京时间 06:17
+  workflow_dispatch:
+    inputs:
+      selftest:
+        description: "只验证密钥：真实调用一次判定接口，不采集、不写回"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: watch
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml==6.0.2
+      - name: 验证密钥
+        if: ${{ inputs.selftest }}
+        run: python -m watch selftest
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
+      - name: 采集、判定、发布
+        if: ${{ !inputs.selftest }}
+        run: python -m watch run
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: 写回仓库
+        if: ${{ !inputs.selftest }}
+        run: |
+          git config user.name "signal-watch"
+          git config user.email "signal-watch@users.noreply.github.com"
+          git add data docs
+          git diff --cached --quiet || git commit -m "watch: $(date -u +%F)"
+          git push

@@ -1,0 +1,210 @@
+# 信号清单。fork 之后主要改这个文件：换成你自己的判断、数据源和阈值。
+# label 给人看（中文），confirm / refute 给模型看（英文判得更准）。
+
+title: 2027 信号追踪
+
+# ---------- 分级阈值 ----------
+thresholds:
+  alert: 0.85        # 概率达到这个值，并且是实质性事件，才进警报 RSS
+  digest: 0.5        # 达到这个值只进月度摘要
+  substantive: 0.6   # “这是一件实质性的事”的最低概率
+max_alerts_per_week: 7    # 每周警报上限，超出的降级进摘要
+max_new_per_source: 10    # 单个源单次最多送判条数
+max_age_days: 30          # 比这更旧的条目不送判
+max_pending: 300
+health_fail_runs: 3       # 一个源连续失败几次后报故障
+reconcile_dates: ["2027-07-01", "2027-12-31"]
+
+# ---------- 判定层 ----------
+judge:
+  jev_model: jev-1.14.0       # 固定版本，阈值是按版本调的
+  jev_weekly_calls: 200       # 硬上限，到了就停
+  jev_usd_per_mtok: 0.042     # 只用于估算花费
+  openai_weekly_calls: 30     # 备用通道硬上限；模型名由仓库变量 OPENAI_MODEL 指定
+  max_input_chars: 1500
+
+# ---------- “现在能不能用上” ----------
+actionable:
+  agents: >-
+    Does this describe a new protocol, SDK, registry, or network that an individual developer can
+    connect their own AI agent to today, in order to interact with agents or services run by other parties?
+  spatial: >-
+    Does this describe a tool, app, or API available today that lets an Apple Vision Pro or smart-glasses
+    user interact with an AI agent through voice, gaze, hand gestures, or body movement?
+
+# ---------- 判断 ----------
+hypotheses:
+  - id: A1
+    track: agents
+    label: 开放 agent 网络不会成，受限的半开放形态先出现
+    confirm: >-
+      Does this report a major platform (such as OpenAI, Anthropic, Google, Microsoft, Apple, Meta, Amazon)
+      launching agent-to-agent interaction across organizations that is permissioned, allow-listed, or
+      comes with explicit authorization and liability terms?
+    refute: >-
+      Does this report an open, permissionless network of AI agents from different owners reaching
+      large-scale real-world adoption?
+  - id: A2
+    track: agents
+    label: 出现被广泛接受的 agent 身份或授权标准
+    confirm: >-
+      Does this report an AI agent identity or authorization standard being adopted by a standards body
+      working group (IETF, W3C, OpenID Foundation) or shipped by multiple major vendors?
+  - id: A3
+    track: agents
+    label: agent 支付与授权标准进入主流
+    confirm: >-
+      Does this report an agent payment protocol (such as AP2, x402, or Agentic Commerce Protocol) going live
+      in production with a major payment network, bank, or consumer platform?
+  - id: A4
+    track: agents
+    label: 安全仍是 agents 网络的卡点
+    confirm: >-
+      Does this report a significant real-world security incident or newly disclosed vulnerability class
+      involving agent-to-agent communication, agent tool protocols, or delegated agent authority?
+    refute: >-
+      Does this report a security mechanism for multi-party agent interaction being deployed at scale
+      and credibly shown to resolve the main trust problems?
+  - id: A5
+    track: agents
+    label: AAIF 成为 Agentic Web 的事实标准层
+    confirm: >-
+      Does this report the Agentic AI Foundation (AAIF) accepting or graduating a project, or one of its
+      working groups publishing a specification, charter decision, or recommendation, that concerns
+      cross-organization agent interaction, agent identity and trust, agent security, or agent payments?
+    refute: >-
+      Does this report a major vendor or project leaving AAIF, forking an AAIF-hosted standard,
+      or launching a competing standard outside AAIF?
+  - id: P1
+    track: agents
+    label: Personal Agent 的记忆可以跨厂商导出
+    confirm: >-
+      Does this report a major AI assistant vendor shipping export or portability of user memory or
+      agent context to other vendors' products?
+  - id: S1
+    track: spatial
+    label: 空间计算 2027 年仍不爆发
+    confirm: >-
+      Does this report a spatial computing or XR headset product line being cancelled, delayed,
+      or having its production or team significantly cut?
+    refute: >-
+      Does this report a spatial computing headset or smart glasses product reaching mass-market sales
+      or usage far beyond previous devices?
+  - id: S2
+    track: spatial
+    label: 眼镜和头显被重新定义为 agent 的感知端口
+    confirm: >-
+      Does this report a major company launching glasses or a headset whose primary interface is an
+      AI agent that sees and hears what the wearer does, rather than apps?
+  - id: S3
+    track: spatial
+    label: 与 agent 的交互从文字走向语音、手势、视线、肢体
+    confirm: >-
+      Does this report a shipped product or system-level API that lets users direct an AI agent by combining
+      voice with gaze, hand gestures, pointing, facial expression, or body movement?
+
+# ---------- 全局排除词（正则，小写匹配） ----------
+exclude:
+  - "\\bhiring\\b"
+  - "\\bcoupon\\b"
+
+# ---------- 数据源 ----------
+# type: feed（任意 Atom/RSS）| arxiv | hn | ietf | gh_search
+# include: 正则列表，命中任一条才送判；留空表示全收
+sources:
+  # --- Agents 网络：AAIF（Linux 基金会下的 Agentic AI Foundation） ---
+  # 官网没有 RSS，用 sitemap 盯新出现的项目页、新闻和博客。新项目页 = 又接纳了一个项目。
+  - id: aaif-site
+    track: agents
+    type: sitemap
+    label: AAIF
+    url: "https://aaif.io/sitemap.xml"
+    prefixes: ["/projects/", "/news/", "/blog/"]
+  - id: aaif-proposals        # 新项目提案和准入规则的变化
+    track: agents
+    type: feed
+    url: "https://github.com/aaif/project-proposals/commits/main.atom"
+    include: ["proposal", "accept", "approv", "lifecycle", "sandbox", "growth", "graduat"]
+  - id: aaif-wg-identity      # 身份与信任工作组：月报、章程、规范
+    track: agents
+    type: feed
+    url: "https://github.com/aaif/wg-identity-and-trust/commits/main.atom"
+    include: ["report", "charter", "spec", "recommend", "decision", "draft", "rfc"]
+  - id: aaif-wg-security      # 未实测分支名，首跑看日志
+    track: agents
+    type: feed
+    url: "https://github.com/aaif/wg-security-and-privacy/commits/main.atom"
+    include: ["report", "charter", "spec", "recommend", "decision", "draft", "rfc", "threat"]
+  - id: aaif-tc               # 技术委员会。未实测分支名，首跑看日志
+    track: agents
+    type: feed
+    url: "https://github.com/aaif/technical-committee/commits/main.atom"
+    include: ["accept", "approv", "vote", "decision", "charter", "working group", "minutes", "project"]
+  - id: goose
+    track: agents
+    type: feed
+    url: "https://github.com/block/goose/releases.atom"
+    include: ["^v?\\d+\\.0\\.0$"]   # 只要大版本
+
+  # --- Agents 网络：协议与标准 ---
+  - {id: mcp-spec, track: agents, type: feed, url: "https://github.com/modelcontextprotocol/modelcontextprotocol/releases.atom"}
+  - {id: a2a-spec, track: agents, type: feed, url: "https://github.com/a2aproject/A2A/tags.atom"}
+  - {id: ap2, track: agents, type: feed, url: "https://github.com/google-agentic-commerce/AP2/tags.atom"}
+  - id: x402
+    track: agents
+    type: feed
+    url: "https://github.com/coinbase/x402/tags.atom"
+    include: ["^(?!.*(npm-|pypi-|go-)).*$"]   # 只要协议本身的版本，不要各语言包的例行发版
+  - id: ietf-agent
+    track: agents
+    type: ietf
+    name_contains: agent
+    include: ["\\bai\\b", "llm", "agentic", "autonomous", "delegat", "a2a", "mcp"]
+  - id: arxiv-agents
+    track: agents
+    type: arxiv
+    query: 'all:"agent interoperability" OR all:"internet of agents" OR all:"agent identity" OR all:"agent-to-agent protocol" OR all:"agent payments"'
+  - id: hn-agents
+    track: agents
+    type: hn
+    query: agent
+    min_points: 150
+    include: ["protocol", "a2a", "\\bmcp\\b", "identity", "payment", "interop", "agent.to.agent", "agent network", "delegat", "hijack", "injection"]
+  - id: hn-mcp
+    track: agents
+    type: hn
+    query: MCP
+    min_points: 150
+
+  # --- 空间计算（已降级：只留三个低噪音源，其余 enabled: false，想恢复删掉这一项即可） ---
+  - id: apple-releases
+    track: spatial
+    type: feed
+    url: "https://developer.apple.com/news/releases/rss/releases.rss"
+    include: ["^visionos \\d+(\\.\\d+)? (beta )?\\("]   # 只要 visionOS 的大版本和 .x 版本，不要 .x.y 补丁
+  - id: apple-news
+    track: spatial
+    type: feed
+    url: "https://developer.apple.com/news/rss/news.rss"
+    include: ["visionos", "vision pro", "spatial", "siri", "app intents", "gesture", "glasses"]
+  - id: arxiv-spatial
+    enabled: false
+    track: spatial
+    type: arxiv
+    query: '(all:"gaze" OR all:"hand gesture" OR all:"multimodal interaction") AND (all:"LLM agent" OR all:"AI agent") AND (all:"XR" OR all:"mixed reality" OR all:"head-mounted" OR all:"smart glasses")'
+  - {id: hn-visionos, track: spatial, type: hn, query: visionOS, min_points: 50}
+  - {id: hn-visionpro, enabled: false, track: spatial, type: hn, query: "Vision Pro", min_points: 100}
+  - {id: hn-glasses, enabled: false, track: spatial, type: hn, query: "smart glasses", min_points: 100}
+  - id: gh-visionos-agents      # 未实测
+    enabled: false
+    track: spatial
+    type: gh_search
+    query: "topic:visionos agent OR llm OR assistant in:name,description,readme"
+    min_stars: 100
+    days: 60
+
+# ---------- 数值指标（不经过模型，偏离基线 factor 倍就报） ----------
+metrics:
+  - {id: npm-mcp-sdk, track: agents, kind: npm, package: "@modelcontextprotocol/sdk", label: "MCP TypeScript SDK", factor: 2.0}
+  - {id: pypi-mcp, track: agents, kind: pypi, package: mcp, label: "MCP Python SDK", factor: 2.0}
+  - {id: pypi-a2a, track: agents, kind: pypi, package: a2a-sdk, label: "A2A Python SDK", factor: 2.0}
