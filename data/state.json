@@ -24,7 +24,7 @@
  },
  "judge_fail_runs": 0,
  "last_digest_month": "2026-11",
- "last_run": "2026-11-13T02:38:02.346421+00:00",
+ "last_run": "2026-11-14T02:27:44.229310+00:00",
  "metric_baseline": {
   "npm-mcp-sdk": 88052475,
   "pypi-a2a": 3445525,
@@ -259,7 +259,8 @@
    "https://aaif.io/news/agntcon-mcpcon-japan-to-convene-builders-advancing-production-ready-agentic-ai",
    "https://aaif.io/news/agentic-ai-foundation-welcomes-57-new-members",
    "https://aaif.io/blog/devex-for-your-agents-how-agents-md-cut-token-usage-and-cost",
-   "https://aaif.io/blog/how-to-give-an-agent-8-000-tools-without-loading-8-000-tools"
+   "https://aaif.io/blog/how-to-give-an-agent-8-000-tools-without-loading-8-000-tools",
+   "https://aaif.io/blog/kids-build-games-and-make-robots-sing-at-agntcon-kids-day"
   ],
   "aaif-tc": [
    "tag:github.com,2008:Grit::Commit/ac08e71a9073be6cf7f8c77bb0ad913893fe6d87",
@@ -533,7 +534,8 @@
    "https://developer.apple.com/news/releases/?id=05112026k",
    "https://developer.apple.com/news/releases/?id=05112026l",
    "https://developer.apple.com/news/releases/?id=05112026m",
-   "https://developer.apple.com/news/releases/?id=11122026a"
+   "https://developer.apple.com/news/releases/?id=11122026a",
+   "https://developer.apple.com/news/releases/?id=11132026a"
   ],
   "arxiv-agents": [
    "http://arxiv.org/abs/2611.03066v1",
@@ -591,7 +593,8 @@
    "hn:50280864",
    "hn:50275626",
    "hn:50458900",
-   "hn:50453637"
+   "hn:50453637",
+   "hn:50477649"
   ],
   "hn-mcp": [
    "hn:50379249"
@@ -655,8 +658,8 @@
  },
  "usage": {
   "2026-W46": {
-   "jev_calls": 2,
-   "jev_input_tokens": 1602
+   "jev_calls": 4,
+   "jev_input_tokens": 3195
   }
  }
 }
