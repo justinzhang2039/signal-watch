@@ -24,7 +24,7 @@
  },
  "judge_fail_runs": 0,
  "last_digest_month": "2026-11",
- "last_run": "2026-11-17T04:29:23.285561+00:00",
+ "last_run": "2026-11-18T03:42:49.269821+00:00",
  "metric_baseline": {
   "npm-mcp-sdk": 88052475,
   "pypi-a2a": 3445525,
@@ -261,7 +261,8 @@
    "https://aaif.io/blog/devex-for-your-agents-how-agents-md-cut-token-usage-and-cost",
    "https://aaif.io/blog/how-to-give-an-agent-8-000-tools-without-loading-8-000-tools",
    "https://aaif.io/blog/kids-build-games-and-make-robots-sing-at-agntcon-kids-day",
-   "https://aaif.io/blog/how-to-tell-whether-an-agent-completed-a-task"
+   "https://aaif.io/blog/how-to-tell-whether-an-agent-completed-a-task",
+   "https://aaif.io/blog/how-to-move-a-skill-from-one-coding-agent-to-another"
   ],
   "aaif-tc": [
    "tag:github.com,2008:Grit::Commit/ac08e71a9073be6cf7f8c77bb0ad913893fe6d87",
@@ -485,7 +486,8 @@
    "https://developer.apple.com/news/?id=ek82tlh0",
    "https://developer.apple.com/news/?id=onjo01rj",
    "https://developer.apple.com/news/?id=nx3eotat",
-   "https://developer.apple.com/news/?id=oqng0zjk"
+   "https://developer.apple.com/news/?id=oqng0zjk",
+   "https://developer.apple.com/news/?id=4o5ie73a"
   ],
   "apple-releases": [
    "https://developer.apple.com/news/releases/?id=11092026a",
@@ -590,7 +592,9 @@
    "tag:github.com,2008:Repository/846698999/v1.53.0",
    "tag:github.com,2008:Repository/846698999/v1.59.1",
    "tag:github.com,2008:Repository/846698999/gdk-v0.1.0-alpha.14",
-   "tag:github.com,2008:Repository/846698999/v1.59.2"
+   "tag:github.com,2008:Repository/846698999/v1.59.2",
+   "tag:github.com,2008:Repository/846698999/v1.60.1",
+   "tag:github.com,2008:Repository/846698999/v1.60.0"
   ],
   "hn-agents": [
    "hn:50452455",
@@ -663,7 +667,11 @@
    "ietf:draft-durga-agent-ephemeral-lineage-01",
    "ietf:draft-durga-agent-clear-revocation-01",
    "ietf:draft-jeong-nmrg-agentic-ai-framework-01",
-   "ietf:draft-nandakumar-agentproto-pace-01"
+   "ietf:draft-nandakumar-agentproto-pace-01",
+   "ietf:draft-das-ai-safety-agentic-cyberattack-finality-00",
+   "ietf:draft-pandey-agent-identity-00",
+   "ietf:draft-das-ai-agent-cyberattack-effect-finality-00",
+   "ietf:draft-correa-agent-capability-binding-00"
   ],
   "mcp-spec": [
    "tag:github.com,2008:Repository/862570523/2026-07-28",
@@ -695,8 +703,8 @@
    "jev_input_tokens": 3195
   },
   "2026-W47": {
-   "jev_calls": 12,
-   "jev_input_tokens": 11500
+   "jev_calls": 17,
+   "jev_input_tokens": 16427
   }
  }
 }
