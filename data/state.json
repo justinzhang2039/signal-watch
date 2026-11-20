@@ -24,7 +24,7 @@
  },
  "judge_fail_runs": 0,
  "last_digest_month": "2026-11",
- "last_run": "2026-11-19T03:28:44.513118+00:00",
+ "last_run": "2026-11-20T03:16:05.105294+00:00",
  "metric_baseline": {
   "npm-mcp-sdk": 88052475,
   "pypi-a2a": 3445525,
@@ -263,7 +263,8 @@
    "https://aaif.io/blog/kids-build-games-and-make-robots-sing-at-agntcon-kids-day",
    "https://aaif.io/blog/how-to-tell-whether-an-agent-completed-a-task",
    "https://aaif.io/blog/how-to-move-a-skill-from-one-coding-agent-to-another",
-   "https://aaif.io/blog/how-to-turn-that-tricky-bug-into-a-conference-talk"
+   "https://aaif.io/blog/how-to-turn-that-tricky-bug-into-a-conference-talk",
+   "https://aaif.io/blog/designing-secure-authorization-across-a2a-and-mcp"
   ],
   "aaif-tc": [
    "tag:github.com,2008:Grit::Commit/ac08e71a9073be6cf7f8c77bb0ad913893fe6d87",
@@ -552,7 +553,9 @@
    "https://developer.apple.com/news/releases/?id=11162026e",
    "https://developer.apple.com/news/releases/?id=11162026f",
    "https://developer.apple.com/news/releases/?id=11182026b",
-   "https://developer.apple.com/news/releases/?id=11182026a"
+   "https://developer.apple.com/news/releases/?id=11182026a",
+   "https://developer.apple.com/news/releases/?id=11192026a",
+   "https://developer.apple.com/news/releases/?id=11192026b"
   ],
   "arxiv-agents": [
    "http://arxiv.org/abs/2611.03066v1",
@@ -599,7 +602,8 @@
    "tag:github.com,2008:Repository/846698999/gdk-v0.1.0-alpha.14",
    "tag:github.com,2008:Repository/846698999/v1.59.2",
    "tag:github.com,2008:Repository/846698999/v1.60.1",
-   "tag:github.com,2008:Repository/846698999/v1.60.0"
+   "tag:github.com,2008:Repository/846698999/v1.60.0",
+   "tag:github.com,2008:Repository/846698999/oi-kit-v0.1.0-alpha.15"
   ],
   "hn-agents": [
    "hn:50452455",
@@ -680,7 +684,8 @@
    "ietf:draft-das-ai-agent-cyberattack-effect-finality-00",
    "ietf:draft-correa-agent-capability-binding-00",
    "ietf:draft-molas-agent-principal-refs-00",
-   "ietf:draft-cosme-audit-agent-traceability-00"
+   "ietf:draft-cosme-audit-agent-traceability-00",
+   "ietf:draft-curtis-agentproto-cross-owner-usecases-00"
   ],
   "mcp-spec": [
    "tag:github.com,2008:Repository/862570523/2026-07-28",
@@ -712,8 +717,8 @@
    "jev_input_tokens": 3195
   },
   "2026-W47": {
-   "jev_calls": 21,
-   "jev_input_tokens": 20272
+   "jev_calls": 23,
+   "jev_input_tokens": 22043
   }
  }
 }
