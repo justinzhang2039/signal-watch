@@ -24,7 +24,7 @@
  },
  "judge_fail_runs": 0,
  "last_digest_month": "2026-11",
- "last_run": "2026-11-20T03:16:05.105294+00:00",
+ "last_run": "2026-11-21T03:14:00.101561+00:00",
  "metric_baseline": {
   "npm-mcp-sdk": 88052475,
   "pypi-a2a": 3445525,
@@ -264,7 +264,8 @@
    "https://aaif.io/blog/how-to-tell-whether-an-agent-completed-a-task",
    "https://aaif.io/blog/how-to-move-a-skill-from-one-coding-agent-to-another",
    "https://aaif.io/blog/how-to-turn-that-tricky-bug-into-a-conference-talk",
-   "https://aaif.io/blog/designing-secure-authorization-across-a2a-and-mcp"
+   "https://aaif.io/blog/designing-secure-authorization-across-a2a-and-mcp",
+   "https://aaif.io/blog/why-does-mcp-use-oauth-instead-of-api-keys"
   ],
   "aaif-tc": [
    "tag:github.com,2008:Grit::Commit/ac08e71a9073be6cf7f8c77bb0ad913893fe6d87",
@@ -603,7 +604,8 @@
    "tag:github.com,2008:Repository/846698999/v1.59.2",
    "tag:github.com,2008:Repository/846698999/v1.60.1",
    "tag:github.com,2008:Repository/846698999/v1.60.0",
-   "tag:github.com,2008:Repository/846698999/oi-kit-v0.1.0-alpha.15"
+   "tag:github.com,2008:Repository/846698999/oi-kit-v0.1.0-alpha.15",
+   "tag:github.com,2008:Repository/846698999/v1.60.2"
   ],
   "hn-agents": [
    "hn:50452455",
@@ -627,7 +629,8 @@
    "hn:50415162",
    "hn:50524736",
    "hn:50547777",
-   "hn:50538303"
+   "hn:50538303",
+   "hn:50572348"
   ],
   "hn-mcp": [
    "hn:50379249"
@@ -685,7 +688,8 @@
    "ietf:draft-correa-agent-capability-binding-00",
    "ietf:draft-molas-agent-principal-refs-00",
    "ietf:draft-cosme-audit-agent-traceability-00",
-   "ietf:draft-curtis-agentproto-cross-owner-usecases-00"
+   "ietf:draft-curtis-agentproto-cross-owner-usecases-00",
+   "ietf:draft-ietf-agentproto-usecases-requirements-00"
   ],
   "mcp-spec": [
    "tag:github.com,2008:Repository/862570523/2026-07-28",
@@ -717,8 +721,8 @@
    "jev_input_tokens": 3195
   },
   "2026-W47": {
-   "jev_calls": 23,
-   "jev_input_tokens": 22043
+   "jev_calls": 25,
+   "jev_input_tokens": 23710
   }
  }
 }
