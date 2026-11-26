@@ -24,7 +24,7 @@
  },
  "judge_fail_runs": 0,
  "last_digest_month": "2026-11",
- "last_run": "2026-11-25T04:53:44.807510+00:00",
+ "last_run": "2026-11-26T04:10:12.938773+00:00",
  "metric_baseline": {
   "npm-mcp-sdk": 88052475,
   "pypi-a2a": 3445525,
@@ -267,7 +267,8 @@
    "https://aaif.io/blog/designing-secure-authorization-across-a2a-and-mcp",
    "https://aaif.io/blog/why-does-mcp-use-oauth-instead-of-api-keys",
    "https://aaif.io/blog/exit-0-is-not-success-monitoring-a-fleet-of-long-running-agents",
-   "https://aaif.io/blog/where-code-mode-belongs-in-the-mcp-stack"
+   "https://aaif.io/blog/where-code-mode-belongs-in-the-mcp-stack",
+   "https://aaif.io/blog/thanksgiving-dinner-needs-an-agents-md"
   ],
   "aaif-tc": [
    "tag:github.com,2008:Grit::Commit/ac08e71a9073be6cf7f8c77bb0ad913893fe6d87",
@@ -614,7 +615,9 @@
    "tag:github.com,2008:Repository/846698999/v1.60.0",
    "tag:github.com,2008:Repository/846698999/oi-kit-v0.1.0-alpha.15",
    "tag:github.com,2008:Repository/846698999/v1.60.2",
-   "tag:github.com,2008:Repository/846698999/v1.61.0"
+   "tag:github.com,2008:Repository/846698999/v1.61.0",
+   "tag:github.com,2008:Repository/846698999/v1.61.1",
+   "tag:github.com,2008:Repository/846698999/oi-kit-v0.1.0-alpha.16"
   ],
   "hn-agents": [
    "hn:50452455",
@@ -706,7 +709,9 @@
    "ietf:draft-hood-agentproto-poppy-over-agtp-00",
    "ietf:draft-zly-aibsn-agent-status-00",
    "ietf:draft-zly-aibsn-agent-status-01",
-   "ietf:draft-stafordtituss-agentic-mandate-evidence-01"
+   "ietf:draft-stafordtituss-agentic-mandate-evidence-01",
+   "ietf:draft-cea-list-vaultys-oauth-agent-deleg-reqs-gaps-00",
+   "ietf:draft-stafordtituss-agentic-mandate-evidence-02"
   ],
   "mcp-spec": [
    "tag:github.com,2008:Repository/862570523/2026-07-28",
@@ -742,8 +747,8 @@
    "jev_input_tokens": 23710
   },
   "2026-W48": {
-   "jev_calls": 10,
-   "jev_input_tokens": 9649
+   "jev_calls": 13,
+   "jev_input_tokens": 12490
   }
  }
 }
